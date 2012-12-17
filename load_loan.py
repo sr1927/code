@@ -92,8 +92,8 @@ def insertrecord(data):
         except :
             print "Error:", sys.exc_info()[0]
             
-    db.close()
-
+    db_test.close()
+    db_train.close()
 
 for filename in os.listdir(dirname):
     print  filename
