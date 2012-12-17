@@ -71,3 +71,83 @@ CREATE TABLE `partner` (
   PRIMARY KEY (`id`)
 ) ;
 
+
+
+
+CREATE TABLE `country` (
+  `name` varchar(100) NOT NULL,
+  `iso_code` varchar(2) DEFAULT NULL,
+  `region` varchar(100) DEFAULT NULL,
+  `latitude` int(11) DEFAULT NULL,
+  `longitude` int(11) DEFAULT NULL,
+  `gdpPerCapitaPPP` int(11) DEFAULT NULL,
+  PRIMARY KEY (`name`),
+  KEY `fk_country_region` (`region`)
+) ;
+
+
+CREATE TABLE `currency` (
+  `code` varchar(3) NOT NULL,
+  `name` varchar(150) DEFAULT NULL,
+  PRIMARY KEY (`code`)
+) ;
+
+
+
+CREATE TABLE `language` (
+  `code` varchar(2) NOT NULL DEFAULT '',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`code`,`name`)
+) ;
+
+
+
+CREATE TABLE `lender_loans` (
+  `lender_id` varchar(100) DEFAULT NULL,
+  `loan_id` int(11) DEFAULT NULL,
+  KEY `loan_id` (`loan_id`),
+  KEY `lender_id` (`lender_id`),
+  CONSTRAINT `lender_loans_ibfk_1` FOREIGN KEY (`loan_id`) REFERENCES `loan` (`id`),
+  CONSTRAINT `lender_loans_ibfk_2` FOREIGN KEY (`lender_id`) REFERENCES `lender` (`lender_id`)
+) ;
+
+
+
+CREATE TABLE `loan_language` (
+  `loan_id` int(11) NOT NULL,
+  `code` varchar(2) DEFAULT NULL,
+  KEY `fk_loan_language_loan_id` (`loan_id`),
+  CONSTRAINT `fk_loan_language_loan_id` FOREIGN KEY (`loan_id`) REFERENCES `loan` (`id`)
+) ;
+
+
+CREATE TABLE `loan_lenders` (
+  `loan_id` int(11) DEFAULT NULL,
+  `lender_id` varchar(100) DEFAULT NULL,
+  KEY `loan_id` (`loan_id`),
+  KEY `lender_id` (`lender_id`),
+  CONSTRAINT `loan_lenders_ibfk_1` FOREIGN KEY (`loan_id`) REFERENCES `loan` (`id`),
+  CONSTRAINT `loan_lenders_ibfk_2` FOREIGN KEY (`lender_id`) REFERENCES `lender` (`lender_id`)
+) ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
