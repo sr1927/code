@@ -11,13 +11,13 @@ db = MySQLdb.connect("localhost","root","password","kiva" )
 
 cursor = db.cursor()
 cursor1 = db.cursor()
-cursor.execute("select * from loan_lenders limit 1000")
+cursor.execute("select * from loan_lenders limit 8000")
 data = cursor.fetchall()
 fig=plt.figure()
 ax=fig.add_axes([0.1,0.1,0.8,0.8])
 # setup mercator map projection.
-m = Basemap(llcrnrlon=0,llcrnrlat=-80,urcrnrlon=360,urcrnrlat=80,projection='mill')
-
+#m = Basemap(llcrnrlon=0,llcrnrlat=-80,urcrnrlon=360,urcrnrlat=80,projection='cyl')
+m = Basemap(projection='cyl')
 for row in data:
     cursor1.execute("select latitude,longitude from country where iso_code=(select country from loan where id ='"+str(row[0])+"')")
     loancountry = cursor1.fetchall()
@@ -32,8 +32,8 @@ for row in data:
         lenderlat = row[0]; lenderlon = row[1]
     # draw great circle route between NY and London
     if loanlat!=0 and loanlon!=0 and lenderlat!=0 and lenderlon!=0:
-        print "drawing", loanlat,loanlon,lenderlat,lenderlon
-        m.drawgreatcircle(loanlon,loanlat,lenderlon,lenderlat,linewidth=1,color='b')
+        #print "drawing", loanlat,loanlon,lenderlat,lenderlon
+        m.drawgreatcircle(loanlon,loanlat,lenderlon,lenderlat,del_s=800.0,linewidth=1,color='g',marker='<')
     
 m.drawcoastlines()
 m.fillcontinents()

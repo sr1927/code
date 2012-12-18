@@ -14,7 +14,7 @@ cursor_test = db_test.cursor()
 
 app_idstr = "&app_id=edu.stern.nyu.pds-f2012"
 h = httplib2.Http()
-for count in range(1,10):
+for count in range(70,400):
     resp, content = h.request("http://api.kivaws.org/v1/loans/newest.json?page="+str(count)+app_idstr)
     assert resp.status == 200
     print resp
@@ -49,6 +49,7 @@ for count in range(1,10):
         name = line["name"]
         status = line["status"]
         funded_amount = line["funded_amount"]
+        paid_amount = None
         if line.has_key("paid_amount"):
             paid_amount = line["paid_amount"]
         image_id = line["image"]["id"]
@@ -57,6 +58,7 @@ for count in range(1,10):
         sector = line["sector"]
         uses = line["use"]
         country_code = line["location"]["country_code"]
+        town = None
         if line["location"].has_key("town"):
             town = line["location"]["town"]
         geolevel = line["location"]["geo"]["level"]
@@ -66,14 +68,18 @@ for count in range(1,10):
         disbursal_amount = line["terms"]["disbursal_amount"]
         disbursal_currency = line["terms"]["disbursal_currency"]
         disbursal_date = line["terms"]["disbursal_date"]
+        disbursal_date = None
         if disbursal_date != None:
             disbursal_date = disbursal_date[:10]
         loan_amount = line["terms"]["loan_amount"]
         nonpayment = line["terms"]["loss_liability"]["nonpayment"]
         currency_exchange = line["terms"]["loss_liability"]["currency_exchange"]
         posted_date = line["posted_date"]
+        posted_date = None
         if posted_date!= None:
             posted_date = posted_date[:10]
+        funded_date = None
+        paid_date = None
         if line.has_key("funded_date"):
             funded_date = line["funded_date"]
         if funded_date != None:
@@ -92,19 +98,21 @@ for count in range(1,10):
         
         try:
             if(random.random() > 0.7):
-                #cursor_test.execute("""INSERT INTO loan values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,date(%s),%s,%s,%s,date(%s),date(%s),%s,date(%s),%s,%s,%s,%s)""",(loan_id,name ,status,funded_amount ,paid_amount,image_id,template_id, activity,sector,uses,country_code,town ,geolevel,geopairs,geotype ,partner_id ,disbursal_amount,disbursal_currency,disbursal_date,loan_amount,nonpayment,currency_exchange ,posted_date,funded_date,None,paid_date,None,journal_entries, journal_bulk_entries,gender))
+                cursor_test.execute("""INSERT INTO loan values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,date(%s),%s,%s,%s,date(%s),date(%s),%s,date(%s),%s,%s,%s,%s)""",(loan_id,name ,status,funded_amount ,paid_amount,image_id,template_id, activity,sector,uses,country_code,town ,geolevel,geopairs,geotype ,partner_id ,disbursal_amount,disbursal_currency,disbursal_date,loan_amount,nonpayment,currency_exchange ,posted_date,funded_date,None,paid_date,None,journal_entries, journal_bulk_entries,gender))
                 db_test.commit()
             else:
-                #cursor_test.execute("""INSERT INTO loan values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,date(%s),%s,%s,%s,date(%s),date(%s),%s,date(%s),%s,%s,%s,%s)""",(loan_id,name ,status,funded_amount ,paid_amount,image_id,template_id, activity,sector,uses,country_code,town ,geolevel,geopairs,geotype ,partner_id ,disbursal_amount,disbursal_currency,disbursal_date,loan_amount,nonpayment,currency_exchange ,posted_date,funded_date,None,paid_date,None,journal_entries, journal_bulk_entries,gender))
+                cursor_test.execute("""INSERT INTO loan values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,date(%s),%s,%s,%s,date(%s),date(%s),%s,date(%s),%s,%s,%s,%s)""",(loan_id,name ,status,funded_amount ,paid_amount,image_id,template_id, activity,sector,uses,country_code,town ,geolevel,geopairs,geotype ,partner_id ,disbursal_amount,disbursal_currency,disbursal_date,loan_amount,nonpayment,currency_exchange ,posted_date,funded_date,None,paid_date,None,journal_entries, journal_bulk_entries,gender))
                 db_train.commit()
         except UnicodeEncodeError:
-            print 'Unicode char', lender_id
+            print 'Unicode char', loan_id
         except NameError as e:
             print "**********************************Rolling back*************"
             print sys.exc_info()[0]
             print e
             db_test.rollback()
             db_train.rollback()
+        except :
+            continue
 
 db_test.close()
 db_train.close()
