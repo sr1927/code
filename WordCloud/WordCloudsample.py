@@ -5,7 +5,7 @@ import MySQLdb
 def getText():
     text = ""
     cursor = db.cursor()
-    cursor.execute("SELECT uses from loan where uses is not null limit 10000")
+    cursor.execute("SELECT uses from loan where uses is not null and rand() <= 0.25")
     data = cursor.fetchall()
     for row in data:
         text += row[0]
@@ -14,7 +14,7 @@ def getText():
 def getLenderText():
     text = ""
     cursor = db.cursor()
-    cursor.execute("SELECT loan_because from lender where loan_because is not null limit 10000")
+    cursor.execute("SELECT loan_because from lender where loan_because is not null and rand() <= 0.25")
     data = cursor.fetchall()
     for row in data:
         text += row[0]
